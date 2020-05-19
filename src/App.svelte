@@ -240,7 +240,7 @@
               .includes('soja') && d.nombre.toLowerCase() !== 'dolar') as dolar}
         <li>
           <button
-            class={selectedDolar === dolar ? 'active' : ''}
+            class={selectedDolar && selectedDolar.nombre === dolar.nombre ? 'active' : ''}
             on:click={() => selectDolar(dolar)}>
             <h4 class="name">{dolar.nombre}</h4>
             <div class="prices">
