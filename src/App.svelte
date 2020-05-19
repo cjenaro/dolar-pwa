@@ -20,6 +20,22 @@
   const selectCurrency = currency => {
     selectedCurrency = currency;
   };
+
+  const avg = (compra, venta) => {
+    return ((localeParseFloat(compra) + localeParseFloat(venta)) / 2).toFixed(
+      2
+    );
+  };
+
+  const localeParseFloat = str => {
+    if (typeof str === "string") {
+      return parseFloat(str.replace(",", "."));
+    } else if (typeof str === "number") {
+      return str;
+    } else {
+      return 0;
+    }
+  };
 </script>
 
 <style>
@@ -98,10 +114,11 @@
   .prices > div {
     padding: 1rem;
     flex: 1;
+    border-right: 1px solid #66339922;
   }
 
-  .prices > div:first-of-type {
-    border-right: 1px solid #66339922;
+  .prices > div:last-of-type {
+    border-right: 0;
   }
 
   .name {
@@ -173,6 +190,10 @@
     box-shadow: inset 0 0 4px 4px #00000022;
     outline: 0;
   }
+
+  h1 {
+    font-size: 1.4rem;
+  }
 </style>
 
 <main>
@@ -206,13 +227,19 @@
         <div>
           <h6>Compra</h6>
           <h1>
-            {selectedCurrency === USD ? (toConvert * parseInt(selectedDolar.compra)).toFixed(2) : (toConvert / parseInt(selectedDolar.compra)).toFixed(2)}
+            {selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.compra)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.compra)).toFixed(2)}
           </h1>
         </div>
         <div>
           <h6>Venta</h6>
           <h1>
-            {selectedCurrency === USD ? (toConvert * parseInt(selectedDolar.venta)).toFixed(2) : (toConvert / parseInt(selectedDolar.venta)).toFixed(2)}
+            {selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.venta)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.venta)).toFixed(2)}
+          </h1>
+        </div>
+        <div>
+          <h6>Promedio</h6>
+          <h1>
+            {selectedCurrency === USD ? (toConvert * avg(selectedDolar.compra, selectedDolar.venta)).toFixed(2) : (toConvert / avg(selectedDolar.compra, selectedDolar.venta)).toFixed(2)}
           </h1>
         </div>
       </div>
@@ -225,10 +252,10 @@
             nombre: 'Dolar Solidario*',
             compra:
               Array.from(value || []).length > 0 &&
-              parseInt(value[0].casa.compra) * 1.3,
+              localeParseFloat(value[0].casa.compra) * 1.3,
             venta:
               Array.from(value || []).length > 0 &&
-              parseInt(value[0].casa.venta) * 1.3
+              localeParseFloat(value[0].casa.venta) * 1.3
           }
         ])
         .filter(d => d.nombre
@@ -246,11 +273,15 @@
             <div class="prices">
               <div>
                 <h6>Compra</h6>
-                <h1>{dolar.compra}</h1>
+                <h1>{localeParseFloat(dolar.compra).toFixed(2)}</h1>
               </div>
               <div>
                 <h6>Venta</h6>
-                <h1>{dolar.venta}</h1>
+                <h1>{localeParseFloat(dolar.venta).toFixed(2)}</h1>
+              </div>
+              <div>
+                <h6>Promedio</h6>
+                <h1>{avg(dolar.compra, dolar.venta)}</h1>
               </div>
             </div>
           </button>
