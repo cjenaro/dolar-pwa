@@ -65,10 +65,19 @@
 
   label::after {
     content: "$";
-    color: rebeccapurple;
+    color: #663399bb;
     position: absolute;
     left: 1rem;
     bottom: -3rem;
+    letter-spacing: 0;
+  }
+
+  label.pesos::after {
+    content: "AR$";
+  }
+
+  label.dolares::after {
+    content: "US$";
   }
 
   input {
@@ -77,7 +86,7 @@
     border: 1px solid rebeccapurple;
     background-color: transparent;
     margin-bottom: 1rem;
-    padding: 1rem 1rem 1rem 2rem;
+    padding: 1rem 1rem 1rem 3.5rem;
   }
 
   ul {
@@ -228,7 +237,11 @@
       Elegí el dolar que queres usar para calcular e ingresá el monto a
       convertir
     </h4>
-    <label for="to-convert">A convertir:</label>
+    <label
+      class={selectedCurrency === USD ? 'dolares' : 'pesos'}
+      for="to-convert">
+      A convertir:
+    </label>
     <input id="to-convert" type="number" bind:value={toConvert} />
     <div class="currency-from">
       <button
@@ -247,19 +260,19 @@
         <div>
           <h6>Compra</h6>
           <h1>
-            {selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.compra)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.compra)).toFixed(2)}
+            {`${selectedCurrency === ARS ? 'U$D' : 'AR$'} ${selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.compra)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.compra)).toFixed(2)}`}
           </h1>
         </div>
         <div>
           <h6>Venta</h6>
           <h1>
-            {selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.venta)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.venta)).toFixed(2)}
+            {`${selectedCurrency === ARS ? 'U$D' : 'AR$'} ${selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.venta)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.venta)).toFixed(2)}`}
           </h1>
         </div>
         <div>
           <h6>Promedio</h6>
           <h1>
-            {selectedCurrency === USD ? (toConvert * avg(selectedDolar.compra, selectedDolar.venta)).toFixed(2) : (toConvert / avg(selectedDolar.compra, selectedDolar.venta)).toFixed(2)}
+            {`${selectedCurrency === ARS ? 'U$D' : 'AR$'} ${selectedCurrency === USD ? (toConvert * avg(selectedDolar.compra, selectedDolar.venta)).toFixed(2) : (toConvert / avg(selectedDolar.compra, selectedDolar.venta)).toFixed(2)}`}
           </h1>
         </div>
       </div>
