@@ -3,6 +3,9 @@
   let dolarPromise;
   let toConvert;
   let selectedDolar;
+  const USD = "usd";
+  const ARS = "ars";
+  let selectedCurrency = USD;
 
   onMount(() => {
     dolarPromise = fetch(
@@ -12,6 +15,10 @@
 
   const selectDolar = dolar => {
     selectedDolar = dolar;
+  };
+
+  const selectCurrency = currency => {
+    selectedCurrency = currency;
   };
 </script>
 
@@ -82,6 +89,7 @@
   .prices {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     justify-content: space-evenly;
     background-color: whitesmoke;
     border-radius: 0 0 4px 4px;
@@ -132,6 +140,38 @@
     margin-bottom: 2rem;
     box-shadow: 8px 8px 0 3px rebeccapurple;
   }
+
+  .how-to,
+  .solidario {
+    text-align: left;
+    width: 100%;
+    max-width: 320px;
+    line-height: 1.8rem;
+    color: #333333dd;
+  }
+
+  .currency-from {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    background: whitesmoke;
+  }
+
+  .currency-from button {
+    padding: 2rem 0;
+    flex: 1;
+    margin: 0;
+    border: 0;
+    font-size: 2rem;
+  }
+
+  .currency-from button.selected {
+    box-shadow: inset 0 0 4px 4px #00000022;
+  }
 </style>
 
 <main>
@@ -142,28 +182,61 @@
       <span class="dolar dolar-3">💸</span>
     </p>
   {:then value}
+    <h4 class="how-to">
+      Elegí el dolar que queres usar para calcular e ingresá el monto a
+      convertir
+    </h4>
     <label for="to-convert">A convertir:</label>
     <input id="to-convert" type="number" bind:value={toConvert} />
+    <div class="currency-from">
+      <button
+        on:click={() => selectCurrency(USD)}
+        class={selectedCurrency === USD ? 'selected' : ''}>
+        U$D
+      </button>
+      <button
+        on:click={() => selectCurrency(ARS)}
+        class={selectedCurrency === ARS ? 'selected' : ''}>
+        AR$
+      </button>
+    </div>
     {#if selectedDolar && toConvert}
       <div class="prices result">
         <div>
           <h6>Compra</h6>
-          <h1>{(toConvert / parseInt(selectedDolar.compra)).toFixed(2)}</h1>
+          <h1>
+            {selectedCurrency === USD ? (toConvert * parseInt(selectedDolar.compra)).toFixed(2) : (toConvert / parseInt(selectedDolar.compra)).toFixed(2)}
+          </h1>
         </div>
         <div>
           <h6>Venta</h6>
-          <h1>{(toConvert / parseInt(selectedDolar.venta)).toFixed(2)}</h1>
+          <h1>
+            {selectedCurrency === USD ? (toConvert * parseInt(selectedDolar.venta)).toFixed(2) : (toConvert / parseInt(selectedDolar.venta)).toFixed(2)}
+          </h1>
         </div>
       </div>
     {/if}
     <ul>
       {#each Array.from(value || [])
         .map(v => v.casa)
+        .concat([
+          {
+            nombre: 'Dolar Solidario*',
+            compra:
+              Array.from(value || []).length > 0 &&
+              parseInt(value[0].casa.compra) * 1.3,
+            venta:
+              Array.from(value || []).length > 0 &&
+              parseInt(value[0].casa.venta) * 1.3
+          }
+        ])
         .filter(d => d.nombre
               .toLowerCase()
               .includes(
                 'dolar'
-              ) && !d.nombre.toLowerCase().includes('soja')) as dolar}
+              ) && !d.nombre
+              .toLowerCase()
+              .includes('soja') && d.nombre.toLowerCase() !== 'dolar') as dolar}
         <li>
           <button
             class={selectedDolar === dolar ? 'active' : ''}
@@ -183,6 +256,9 @@
         </li>
       {/each}
     </ul>
+    <p class="solidario">
+      * Precio del dolar solidario inferido del valor del dolar oficial
+    </p>
   {:catch error}
     <pre>{JSON.stringify(error, null, 2)}</pre>
   {/await}
