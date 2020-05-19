@@ -154,8 +154,19 @@
     width: 100%;
     max-width: 320px;
     border-radius: 4px;
+    flex-direction: column;
     margin-bottom: 2rem;
     box-shadow: 8px 8px 0 3px rebeccapurple;
+  }
+
+  .result > div {
+    border-right: 0;
+    border-bottom: 1px solid #66339922;
+    width: calc(100% - 2rem);
+  }
+
+  .result > div:last-of-type {
+    border-bottom: 0;
   }
 
   .how-to,
