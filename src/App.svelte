@@ -60,6 +60,15 @@
     width: 100%;
     max-width: 320px;
     text-align: left;
+    position: relative;
+  }
+
+  label::after {
+    content: "$";
+    color: rebeccapurple;
+    position: absolute;
+    left: 1rem;
+    bottom: -3rem;
   }
 
   input {
@@ -68,7 +77,7 @@
     border: 1px solid rebeccapurple;
     background-color: transparent;
     margin-bottom: 1rem;
-    padding: 1rem;
+    padding: 1rem 1rem 1rem 2rem;
   }
 
   ul {
