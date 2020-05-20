@@ -8,9 +8,9 @@
   let selectedCurrency = USD;
 
   onMount(() => {
-    dolarPromise = fetch(
-      "https://www.dolarsi.com/api/api.php?type=valoresprincipales"
-    ).then(blob => blob.json());
+    dolarPromise = fetch("https://dolar-back.cracss.com/").then(blob =>
+      blob.json()
+    );
   });
 
   const selectDolar = dolar => {
@@ -144,6 +144,7 @@
     width: 100%;
     padding: 1rem 0;
     color: white;
+    text-transform: capitalize;
   }
 
   h6 {
@@ -221,7 +222,7 @@
   }
 
   h1 {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
   }
 </style>
 
@@ -260,61 +261,54 @@
         <div>
           <h6>Compra</h6>
           <h1>
-            {`${selectedCurrency === ARS ? 'U$D' : 'AR$'} ${selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.compra)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.compra)).toFixed(2)}`}
+            {`${selectedCurrency === ARS ? 'U$D' : 'AR$'} ${selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.Compra)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.Compra)).toFixed(2)}`}
           </h1>
         </div>
         <div>
           <h6>Venta</h6>
           <h1>
-            {`${selectedCurrency === ARS ? 'U$D' : 'AR$'} ${selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.venta)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.venta)).toFixed(2)}`}
+            {`${selectedCurrency === ARS ? 'U$D' : 'AR$'} ${selectedCurrency === USD ? (toConvert * localeParseFloat(selectedDolar.Venta)).toFixed(2) : (toConvert / localeParseFloat(selectedDolar.Venta)).toFixed(2)}`}
           </h1>
         </div>
         <div>
           <h6>Promedio</h6>
           <h1>
-            {`${selectedCurrency === ARS ? 'U$D' : 'AR$'} ${selectedCurrency === USD ? (toConvert * avg(selectedDolar.compra, selectedDolar.venta)).toFixed(2) : (toConvert / avg(selectedDolar.compra, selectedDolar.venta)).toFixed(2)}`}
+            {`${selectedCurrency === ARS ? 'U$D' : 'AR$'} ${selectedCurrency === USD ? (toConvert * avg(selectedDolar.Compra, selectedDolar.Venta)).toFixed(2) : (toConvert / avg(selectedDolar.Compra, selectedDolar.Venta)).toFixed(2)}`}
           </h1>
         </div>
       </div>
     {/if}
     <ul>
       {#each Array.from(value || [])
-        .map(v => v.casa)
         .concat([
           {
-            nombre: 'Dolar Solidario*',
-            compra:
+            Nombre: 'Dolar Solidario*',
+            Compra:
               Array.from(value || []).length > 0 &&
-              localeParseFloat(value[0].casa.compra) * 1.3,
-            venta:
+              localeParseFloat(value[0].Compra) * 1.3,
+            Venta:
               Array.from(value || []).length > 0 &&
-              localeParseFloat(value[0].casa.venta) * 1.3
+              localeParseFloat(value[0].Venta) * 1.3
           }
         ])
-        .filter(d => d.nombre
-              .toLowerCase()
-              .includes(
-                'dolar'
-              ) && !d.nombre
-              .toLowerCase()
-              .includes('soja') && d.nombre.toLowerCase() !== 'dolar') as dolar}
+        .map(d => ({ ...d, Nombre: d.Nombre.toLowerCase() })) as dolar}
         <li>
           <button
-            class={selectedDolar && selectedDolar.nombre === dolar.nombre ? 'active' : ''}
+            class={selectedDolar && selectedDolar.Nombre === dolar.Nombre ? 'active' : ''}
             on:click={() => selectDolar(dolar)}>
-            <h4 class="name">{dolar.nombre}</h4>
+            <h4 class="name">{dolar.Nombre}</h4>
             <div class="prices">
               <div>
                 <h6>Compra</h6>
-                <h1>{localeParseFloat(dolar.compra).toFixed(2)}</h1>
+                <h1>{localeParseFloat(dolar.Compra).toFixed(2)}</h1>
               </div>
               <div>
                 <h6>Venta</h6>
-                <h1>{localeParseFloat(dolar.venta).toFixed(2)}</h1>
+                <h1>{localeParseFloat(dolar.Venta).toFixed(2)}</h1>
               </div>
               <div>
                 <h6>Promedio</h6>
-                <h1>{avg(dolar.compra, dolar.venta)}</h1>
+                <h1>{avg(dolar.Compra, dolar.Venta)}</h1>
               </div>
             </div>
           </button>
