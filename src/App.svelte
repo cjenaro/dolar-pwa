@@ -51,12 +51,11 @@
     flex-direction: column;
   }
 
-  label {
+  .label, label {
     color: rebeccapurple;
     font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 4px;
-    margin-bottom: 0.6rem;
     width: 100%;
     max-width: 320px;
     text-align: left;
@@ -68,7 +67,7 @@
     color: #663399bb;
     position: absolute;
     left: 1rem;
-    bottom: -3rem;
+    bottom: -38px;
     letter-spacing: 0;
   }
 
@@ -82,11 +81,17 @@
 
   input {
     width: 100%;
-    max-width: 320px;
+    max-width: 322px;
     border: 1px solid rebeccapurple;
     background-color: transparent;
     margin-bottom: 1rem;
     padding: 1rem 1rem 1rem 3.5rem;
+    border-right: 1px solid rebeccapurple;
+    border-left: 1px solid rebeccapurple;
+    border-bottom: 1px solid rebeccapurple;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-top: 1px dotted rebeccapurple;
   }
 
   ul {
@@ -130,7 +135,7 @@
   }
 
   .prices > div {
-    padding: 1rem;
+    padding: 0.7rem;
     flex: 1;
     border-right: 1px solid #66339922;
   }
@@ -204,16 +209,22 @@
     align-items: center;
     justify-content: center;
     border-radius: 4px;
-    margin-bottom: 1rem;
     background: whitesmoke;
+    border-top: 1px solid rebeccapurple;
+    border-left: 1px solid rebeccapurple;
+    border-right: 1px solid rebeccapurple;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
   }
 
   .currency-from button {
-    padding: 2rem 0;
+    padding: 0.7rem 0;
     flex: 1;
     margin: 0;
     border: 0;
-    font-size: 2rem;
+    font-size: 1.2rem;
   }
 
   .currency-from button.selected {
@@ -238,12 +249,7 @@
       Elegí el dolar que queres usar para calcular e ingresá el monto a
       convertir
     </h4>
-    <label
-      class={selectedCurrency === USD ? 'dolares' : 'pesos'}
-      for="to-convert">
-      A convertir:
-    </label>
-    <input id="to-convert" type="number" bind:value={toConvert} />
+    <span class="label">A CONVERTIR:</span>
     <div class="currency-from">
       <button
         on:click={() => selectCurrency(USD)}
@@ -256,6 +262,11 @@
         AR$
       </button>
     </div>
+    <label
+      class={selectedCurrency === USD ? 'dolares' : 'pesos'}
+      for="to-convert">
+    </label>
+    <input id="to-convert" type="number" bind:value={toConvert} />
     {#if selectedDolar && toConvert}
       <div class="prices result">
         <div>
@@ -282,7 +293,7 @@
       {#each Array.from(value || [])
         .concat([
           {
-            Nombre: 'Dolar Solidario*',
+            Nombre: 'Dólar Solidario*',
             Compra:
               Array.from(value || []).length > 0 &&
               localeParseFloat(value[0].Compra) * 1.3,
@@ -292,6 +303,8 @@
           }
         ])
         .map(d => ({ ...d, Nombre: d.Nombre.toLowerCase() })) as dolar}
+
+        {#if dolar.Nombre.indexOf("dólar") > -1 }
         <li>
           <button
             class={selectedDolar && selectedDolar.Nombre === dolar.Nombre ? 'active' : ''}
@@ -313,11 +326,42 @@
             </div>
           </button>
         </li>
+        {/if}
+
+      {/each}
+      <p class="solidario">
+        * Precio del dolar solidario inferido del valor del dolar oficial
+      </p>
+
+      <h4>---- OTRAS MONEDAS ----</h4>
+
+      {#each Array.from(value || [])
+        .map(d => ({ ...d, Nombre: d.Nombre.toLowerCase() })) as dolar}
+        {#if  dolar.Nombre.indexOf("dólar") === -1}
+        <li>
+          <button
+            class={selectedDolar && selectedDolar.Nombre === dolar.Nombre ? 'active' : ''}>
+            <h4 class="name">{dolar.Nombre}</h4>
+            <div class="prices">
+              <div>
+                <h6>Compra</h6>
+                <h1>{localeParseFloat(dolar.Compra).toFixed(2)}</h1>
+              </div>
+              <div>
+                <h6>Venta</h6>
+                <h1>{localeParseFloat(dolar.Venta).toFixed(2)}</h1>
+              </div>
+              <div>
+                <h6>Promedio</h6>
+                <h1>{avg(dolar.Compra, dolar.Venta)}</h1>
+              </div>
+            </div>
+          </button>
+        </li>
+        {/if}
+
       {/each}
     </ul>
-    <p class="solidario">
-      * Precio del dolar solidario inferido del valor del dolar oficial
-    </p>
   {:catch error}
     <pre>{JSON.stringify(error, null, 2)}</pre>
   {/await}
