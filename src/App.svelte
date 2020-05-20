@@ -195,11 +195,17 @@
 
   .how-to,
   .solidario {
-    text-align: left;
+    text-align: right;
     width: 100%;
     max-width: 320px;
     line-height: 1.8rem;
     color: #333333dd;
+  }
+
+  @media(min-width: 688px) {
+    .solidario {
+      margin-left: auto;
+    }
   }
 
   .currency-from {
@@ -329,12 +335,15 @@
         {/if}
 
       {/each}
-      <p class="solidario">
-        * Precio del dolar solidario inferido del valor del dolar oficial
-      </p>
+    </ul>
 
-      <h4>---- OTRAS MONEDAS ----</h4>
+    <p class="solidario">
+      * Precio del dolar solidario inferido del valor del dolar oficial
+    </p>
 
+    <h4>---- OTRAS MONEDAS ----</h4>
+
+    <ul>
       {#each Array.from(value || [])
         .map(d => ({ ...d, Nombre: d.Nombre.toLowerCase() })) as dolar}
         {#if  dolar.Nombre.indexOf("dólar") === -1}
