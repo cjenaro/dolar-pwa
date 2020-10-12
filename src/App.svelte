@@ -302,10 +302,10 @@
             Nombre: 'Dólar Solidario*',
             Compra:
               Array.from(value || []).length > 0 &&
-              localeParseFloat(value[0].Compra) * 1.3,
+              localeParseFloat(value[0].Compra) * 1.65,
             Venta:
               Array.from(value || []).length > 0 &&
-              localeParseFloat(value[0].Venta) * 1.3
+              localeParseFloat(value[0].Venta) * 1.65
           }
         ])
         .map(d => ({ ...d, Nombre: d.Nombre.toLowerCase() })) as dolar}
